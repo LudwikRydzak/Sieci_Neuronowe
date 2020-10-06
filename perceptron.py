@@ -6,12 +6,12 @@ class Perceptron:
         self.entry_values = []
         self.entry_weights = []
         self.entry_values.append(1)
-        self.bias = 5
-        self.entry_weights.append(random.random() / 10)
+        self.bias = 1
+        self.entry_weights.append(round((random.random() / 10),4))
 
         for i in range(_entry_count):
             self.entry_values.append(0)
-            self.entry_weights.append(random.random() / 10)
+            self.entry_weights.append(round((random.random() / 10),4))
         self.learning_factor = _learning_factor
 
     def bipolar_function(self, _sum):
@@ -34,7 +34,7 @@ class Perceptron:
         epoch = 1
         display_epoch =''
         is_learning_error = True
-        while (is_learning_error and epoch<20000):
+        while (is_learning_error and epoch<2000):
             is_learning_error = False
             display_epoch = display_epoch+'.'
             for i in range(len(_learning_set)):
@@ -46,10 +46,15 @@ class Perceptron:
                 for j in range(len(self.entry_values)):
                     change = self.weight_change(label, self.entry_values[j], output)
                     if (change != 0):
-                        self.entry_weights[j] = self.entry_weights[j] + self.learning_factor * change
+                        self.entry_weights[j] = round(self.entry_weights[j] + self.learning_factor * change, 4)
                         is_learning_error = True
-            print(epoch)
             epoch += 1
-
+        print(epoch)
         print(display_epoch)
         print(self.entry_weights)
+
+    def prediction(self, _test_set):
+        self.entry_function(_test_set)
+        sum = self.sum()
+        output = self.bipolar_function(sum)
+        return output
