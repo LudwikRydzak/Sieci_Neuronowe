@@ -17,12 +17,22 @@ class Perceptron:
     def bipolar_function(self, _sum):
         return 1 if _sum > 0 else -1
 
-    def entry_function(self, _entry_values):
+    def unipolar_function(self, _sum):
+        return 1 if _sum > 0 else 0
+
+    def output(self, _sum, _uni0_bi1):
+        if _uni0_bi1 == 0:
+            return self.unipolar_function(_sum)
+        if _uni0_bi1 == 1:
+            return self.bipolar_function(_sum)
+
+
+    def entry_function(self, _entry_values, _uni0_bi1):
         for i in range(len(_entry_values)):
-            self.entry_values[i+1] = 1 if _entry_values[i] > 0 else -1
+            self.entry_values[i + 1] = _entry_values[i]
 
     def sum(self):
-        sum = 0;
+        sum = 0.0;
         for i in range(len(self.entry_values)):
             sum += self.entry_values[i] * self.entry_weights[i]
         return sum
@@ -30,7 +40,7 @@ class Perceptron:
     def weight_change(self, _label, _entry_value, _final_value):
         return (_label - _final_value) * _entry_value
 
-    def learn(self, _learning_set):
+    def learn(self, _learning_set, _uni0_bi1):
         epoch = 1
         display_epoch =''
         is_learning_error = True
@@ -40,9 +50,9 @@ class Perceptron:
             for i in range(len(_learning_set)):
                 set = _learning_set[i]
                 label, entry_values_set = set[0], set[1:]
-                self.entry_function(entry_values_set)
+                self.entry_function(entry_values_set, _uni0_bi1)
                 sum = self.sum()
-                output = self.bipolar_function(sum)
+                output = self.output(sum, _uni0_bi1)
                 for j in range(len(self.entry_values)):
                     change = self.weight_change(label, self.entry_values[j], output)
                     if (change != 0):
@@ -53,8 +63,8 @@ class Perceptron:
         print(display_epoch)
         print(self.entry_weights)
 
-    def prediction(self, _test_set):
-        self.entry_function(_test_set)
+    def prediction(self, _test_set, _uni0_bi1):
+        self.entry_function(_test_set, _uni0_bi1)
         sum = self.sum()
-        output = self.bipolar_function(sum)
+        output = self.output(sum, _uni0_bi1)
         return output
