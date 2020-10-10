@@ -2,16 +2,20 @@ import random
 import numpy as np
 
 class Perceptron:
-    def __init__(self, _entry_count, _learning_factor):
+    def __init__(self, _entry_count, _learning_factor, _max_epochs, _weight_range_begin, _weight_range_stop):
         self.entry_values = []
         self.entry_weights = []
         self.entry_values.append(1)
+        self.weight_range = _weight_range_begin, _weight_range_stop
         self.bias = 1
-        self.entry_weights.append(round((random.random() / 10),4))
+        self.entry_weights.append(random.random() * (_weight_range_stop-_weight_range_begin) + _weight_range_begin)
+        # for example i need value from range [-0.5, 0.5]
+        # [0,1]*(0.5-(-0.5))+(-0.5) = [0,1]*1-0.5 = [-0.5,0.5]
+        self.max_epoch = _max_epochs
 
         for i in range(_entry_count):
             self.entry_values.append(0)
-            self.entry_weights.append(round((random.random() / 10),4))
+            self.entry_weights.append(random.random() * (_weight_range_stop-_weight_range_begin) + _weight_range_begin)
         self.learning_factor = _learning_factor
 
     def bipolar_function(self, _sum):
@@ -43,7 +47,7 @@ class Perceptron:
     def learn(self, _learning_set, _uni0_bi1):
         epoch = 1
         is_learning_error = True
-        while (is_learning_error and epoch<2000):
+        while (is_learning_error and epoch<self.max_epoch):
             is_learning_error = False
             for i in range(len(_learning_set)):
                 set = _learning_set[i]
@@ -54,7 +58,7 @@ class Perceptron:
                 for j in range(len(self.entry_values)):
                     change = self.weight_change(label, self.entry_values[j], output)
                     if (change != 0):
-                        self.entry_weights[j] = round(self.entry_weights[j] + self.learning_factor * change, 4)
+                        self.entry_weights[j] = self.entry_weights[j] + self.learning_factor * change
                         is_learning_error = True
             epoch += 1
         print(f'Liczba epok uczenia: {epoch}')
@@ -76,5 +80,5 @@ class Perceptron:
                 correct_answers += 1
             else:
                 wrong_answers += 1
-        percent = correct_answers/(correct_answers+wrong_answers) *100
+        percent = round(correct_answers/(correct_answers+wrong_answers), 4) *100
         return f'procent poprawnych odpowiedzi wynosi: {percent}%'
