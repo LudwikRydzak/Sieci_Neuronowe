@@ -61,8 +61,9 @@ class Perceptron:
                         self.entry_weights[j] = self.entry_weights[j] + self.learning_factor * change
                         is_learning_error = True
             epoch += 1
-        print(f'Liczba epok uczenia: {epoch}')
-        print(self.entry_weights)
+        # print(f'Liczba epok uczenia: {epoch}')
+        # print(self.entry_weights)
+        return epoch
 
     def prediction(self, _test_set, _uni0_bi1):
         self.entry_function(_test_set)
@@ -81,4 +82,4 @@ class Perceptron:
             else:
                 wrong_answers += 1
         percent = round(correct_answers/(correct_answers+wrong_answers), 4) *100
-        return f'procent poprawnych odpowiedzi wynosi: {percent}%'
+        return percent
